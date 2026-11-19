@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arif Syahmi — Cybersecurity Portfolio</title>
+<!-- recon pays off: flag{v13w_s0urc3_1s_r3c0n}  (submit it in the terminal) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b10;--panel:#0c131b;--panel2:#101a24;--line:#1c2a37;--txt:#cfe3d8;--mute:#7f978b;--g:#39ff88;--gd:#1d8f4f;--c:#3ad7ff;--r:#ff4d6d;--y:#ffd166}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html.nosmooth{scroll-behavior:auto}
+body{background:var(--bg);color:var(--txt);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:15px;line-height:1.65;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(57,255,136,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,136,.035) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);pointer-events:none;z-index:50;opacity:.3}
+a{color:var(--c);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{position:relative;max-width:1120px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Chakra Petch',sans-serif;line-height:1.15;color:#eafff3}
+
+/* nav */
+nav{position:sticky;top:0;z-index:40;background:rgba(7,11,16,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+.logo{font-weight:800;color:var(--g);letter-spacing:.5px;white-space:nowrap}
+.logo span{color:var(--mute);font-weight:400}
+.nav-links{display:flex;gap:18px;margin-left:auto;font-size:13px}
+.nav-links a{color:var(--mute)}
+.nav-links a:hover{color:var(--g);text-decoration:none}
+.gbtn{font:600 12px 'JetBrains Mono',monospace;color:#04110a;background:var(--g);border:0;border-radius:6px;padding:8px 12px;cursor:pointer;white-space:nowrap;box-shadow:0 0 18px rgba(57,255,136,.35)}
+.gbtn:hover{filter:brightness(1.1)}
+body.game .gbtn{background:var(--r);color:#fff;box-shadow:0 0 18px rgba(255,77,109,.4)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:84px 0 90px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gd);background:rgba(57,255,136,.07);color:var(--g);font-size:12px;padding:4px 12px;border-radius:99px}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.hero h1{font-size:clamp(38px,5.4vw,62px);margin:22px 0 10px;letter-spacing:.5px}
+.hero h1 em{font-style:normal;color:var(--g);text-shadow:0 0 22px rgba(57,255,136,.45)}
+.role{color:var(--c);font-size:16px;min-height:26px}
+.role .cur{display:inline-block;width:9px;height:17px;background:var(--c);vertical-align:-3px;margin-left:2px;animation:blink 1s steps(1) infinite}
+.blurb{color:var(--mute);margin:18px 0 28px;max-width:520px}
+.blurb b{color:var(--txt);font-weight:600}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{font:600 13px 'JetBrains Mono',monospace;padding:11px 18px;border-radius:7px;border:1px solid var(--g);color:var(--g);background:transparent;cursor:pointer}
+.btn:hover{background:rgba(57,255,136,.1);text-decoration:none}
+.btn.solid{background:var(--g);color:#04110a}
+.btn.solid:hover{filter:brightness(1.1)}
+
+/* terminal */
+.term{background:#05090d;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(57,255,136,.05)}
+.tbar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;color:var(--mute)}
+.tbar b{width:11px;height:11px;border-radius:50%;display:inline-block}
+.tbar span{margin-left:8px}
+.tbody{height:300px;overflow-y:auto;padding:14px 16px;font-size:13px;line-height:1.55}
+.tl{white-space:pre-wrap;word-break:break-word}
+.tl.c{color:var(--c)}.tl.g{color:var(--g)}.tl.m{color:var(--mute)}.tl.r{color:var(--r)}.tl.y{color:var(--y)}
+.tin{display:flex;gap:8px;align-items:center;margin-top:4px}
+.tin label{color:var(--g);white-space:nowrap}
+.tin input{flex:1;background:transparent;border:0;outline:0;color:var(--txt);font:inherit;caret-color:var(--g)}
+.thint{font-size:11.5px;color:var(--mute);padding:8px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.thint b{color:var(--y);font-weight:600}
+
+/* sections */
+section{padding:56px 0}
+.sec-title{display:flex;align-items:baseline;gap:14px;margin-bottom:26px}
+.sec-title h2{font-size:30px}
+.sec-title h2::before{content:"/ ";color:var(--g)}
+.sec-title small{color:var(--mute);font-size:12px}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:22px;position:relative;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--gd)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.about{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+.about p{color:var(--mute);margin-bottom:12px}
+.about p b{color:var(--txt)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:#060c11;border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font:700 28px 'Chakra Petch',sans-serif;color:var(--g)}
+.stat span{font-size:12px;color:var(--mute)}
+
+.proj .kicker{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--c)}
+.proj h3{font-size:21px;margin:6px 0 10px}
+.proj p{color:var(--mute);font-size:13.5px}
+.proj ul{list-style:none;margin:12px 0 14px;font-size:13px;color:var(--txt)}
+.proj li{padding-left:18px;position:relative;margin:4px 0}
+.proj li::before{content:">";position:absolute;left:0;color:var(--g)}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-size:11px;padding:3px 9px;border-radius:5px;background:rgba(58,215,255,.08);border:1px solid rgba(58,215,255,.25);color:var(--c)}
+.proj.feature{grid-column:1/-1;border-color:var(--gd);box-shadow:0 0 0 1px rgba(57,255,136,.08),0 0 40px rgba(57,255,136,.06)}
+.proj.feature h3{font-size:26px}
+.sev{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.sev span{font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid}
+.sev .hi{color:var(--r);border-color:rgba(255,77,109,.45);background:rgba(255,77,109,.08)}
+.sev .md{color:var(--y);border-color:rgba(255,209,102,.45);background:rgba(255,209,102,.07)}
+
+.skill h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.skill h3 i{font-style:normal;color:var(--g)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:12px;padding:4px 10px;border-radius:5px;background:#060c11;border:1px solid var(--line)}
+
+.edu h3{font-size:20px}
+.edu .where{color:var(--c);font-size:13px;margin:4px 0 12px}
+.edu p{color:var(--mute);font-size:13.5px}
+.timeline{margin-top:14px;border-left:2px solid var(--line);padding-left:16px}
+.timeline div{position:relative;margin:10px 0;font-size:13px}
+.timeline div::before{content:"";position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--g)}
+.timeline span{color:var(--mute)}
+
+.contact{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:center}
+.contact h3{font-size:26px;margin-bottom:10px}
+.contact p{color:var(--mute)}
+.clist{display:grid;gap:10px}
+.clist a,.clist div{display:flex;gap:12px;align-items:center;background:#060c11;border:1px solid var(--line);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--txt)}
+.clist a:hover{border-color:var(--gd);text-decoration:none}
+.clist b{color:var(--g);min-width:72px;font-weight:600}
+.todo{color:var(--y)!important}
+
+footer{border-top:1px solid var(--line);padding:30px 0 44px;color:var(--mute);font-size:12.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer code{color:var(--y)}
+
+/* game */
+#game{position:fixed;inset:0;pointer-events:none;z-index:45;display:none}
+body.game #game{display:block}
+body.game .plat{box-shadow:0 -3px 0 0 rgba(57,255,136,.55),0 -10px 18px -10px rgba(57,255,136,.5)}
+#hud{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:48;display:none;gap:18px;align-items:center;background:rgba(5,9,13,.92);border:1px solid var(--gd);border-radius:9px;padding:8px 16px;font-size:13px;box-shadow:0 0 24px rgba(57,255,136,.18);white-space:nowrap}
+body.game #hud{display:flex}
+#hud b{color:var(--g)}
+#hud .hp{color:var(--r);letter-spacing:2px}
+#hud .keys{color:var(--mute);font-size:11px}
+#toast{position:fixed;left:50%;top:120px;transform:translateX(-50%);z-index:49;background:var(--g);color:#04110a;font-weight:800;font-size:13px;padding:8px 14px;border-radius:7px;opacity:0;transition:opacity .25s;pointer-events:none}
+#touch{position:fixed;bottom:18px;left:0;right:0;z-index:48;display:none;justify-content:space-between;padding:0 18px;pointer-events:none}
+#touch div{display:flex;gap:12px}
+#touch button{pointer-events:auto;width:62px;height:62px;border-radius:50%;border:1px solid var(--gd);background:rgba(5,9,13,.85);color:var(--g);font-size:22px;touch-action:none;user-select:none;-webkit-user-select:none}
+body.game.touchdev #touch{display:flex}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(2,5,8,.78);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.mbox{max-width:460px;width:100%;background:var(--panel);border:1px solid var(--gd);border-radius:12px;padding:26px;box-shadow:0 0 60px rgba(57,255,136,.18)}
+.mbox h3{font-size:24px;margin-bottom:10px;color:var(--g)}
+.mbox.bad{border-color:var(--r)}.mbox.bad h3{color:var(--r)}
+.mbox p{color:var(--mute);font-size:13.5px;margin-bottom:12px}
+.mbox .code{background:#05090d;border:1px dashed var(--gd);color:var(--g);padding:10px;border-radius:7px;font-size:13px;margin:12px 0;word-break:break-all}
+.mbox kbd{background:#05090d;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--txt);font-size:12px}
+.mbox .btns{margin-top:16px}
+
+@media (max-width:860px){
+  .hero,.about,.contact{grid-template-columns:1fr}
+  .hero{padding:52px 0 60px;gap:34px}
+  .nav-links{display:none}
+  .gbtn{margin-left:auto}
+  #hud .keys{display:none}
+}
+@media (prefers-reduced-motion:reduce){.pill i,.role .cur{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="game" aria-hidden="true"></canvas>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">root@arif<span>:~#</span></div>
+    <div class="nav-links">
+      <a href="#about">about</a><a href="#projects">projects</a><a href="#skills">skills</a><a href="#education">education</a><a href="#contact">contact</a>
+    </div>
+    <button class="gbtn" id="gameBtn">▶ GAME MODE</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="hero" id="top">
+    <div>
+      <div class="pill"><i></i> status: open to internship · CompTIA Security+</div>
+      <h1 class="plat" id="spawn">Muhamad <em>Arif</em> Syahmi</h1>
+      <div class="role"><span id="roleText"></span><span class="cur"></span></div>
+      <p class="blurb plat">Final-year <b>Computer Science (Computer Security)</b> student at <b>UTeM</b> and <b>CompTIA Security+</b> certified. I break web apps in the lab, build SIEM environments, and turned intrusion detection into a tower defense game for my FYP. Looking for an internship in <b>VAPT, SOC or security engineering</b>.</p>
+      <div class="btns">
+        <a class="btn solid" href="#projects">view_projects()</a>
+        <a class="btn" href="#contact">contact --me</a>
+      </div>
+    </div>
+
+    <div class="term plat" data-flag="0.82">
+      <div class="tbar"><b style="background:#ff5f57"></b><b style="background:#febc2e"></b><b style="background:#28c840"></b><span>root@arif: ~/portfolio</span></div>
+      <div class="tbody" id="tout"></div>
+      <div class="thint"><span>type <b>help</b> · 3 hidden recon flags</span><span id="reconCount">0/3 found</span></div>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="sec-title"><h2 class="plat">about</h2><small>whoami --verbose</small></div>
+    <div class="about">
+      <div class="card plat" data-flag="0.5">
+        <p>I'm <b>Arif</b>, a final-year student at the <b>Faculty of Artificial Intelligence and Cyber Security (FAIX), Universiti Teknikal Malaysia Melaka</b>, majoring in Computer Security.</p>
+        <p>My coursework covers both sides of the fence: <b>offensive</b> (penetration testing, OWASP Top 10, MITRE ATT&amp;CK), <b>defensive</b> (IDS/IPS, SIEM, firewalls, IPsec VPN), <b>forensics</b>, and <b>governance</b> (risk management with ISO/IEC 27005, PDPA and the Cyber Security Act 2024).</p>
+        <p>I like learning by building: labs, reports that clients could actually use, and tools that make security easier to learn.</p>
+      </div>
+      <div class="stats">
+        <div class="stat plat"><b>7</b><span>vulnerabilities found &amp; reported in a VAPT engagement</span></div>
+        <div class="stat plat" data-bug="1"><b>1</b><span>gamified IDS-training FYP in Unity WebGL</span></div>
+        <div class="stat plat"><b>32</b><span>server hardening policies written (Windows + Linux)</span></div>
+        <div class="stat plat"><b>4</b><span>VMs &amp; tools stood up for a live SIEM lab</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-title"><h2 class="plat">projects</h2><small>ls ~/projects --sort=impact</small></div>
+    <div class="grid">
+      <article class="card proj feature plat" data-flag="0.9">
+        <div class="kicker">Final Year Project · BAXU 3973</div>
+        <h3>Net-Guardian: Gamified IDS Training</h3>
+        <p>A tower defense game that teaches intrusion detection. Incoming network attacks are the "enemies"; players defend by deploying towers mapped to IDS signatures, learning which signature catches which attack.</p>
+        <ul>
+          <li>Designed a <b>Signature-to-Tower (STG)</b> gamification framework mapping IDS signatures to game mechanics</li>
+          <li>Built in <b>Unity WebGL</b> so it runs in the browser, with a <b>PHP REST API</b> backend over a six-entity database</li>
+          <li>Followed <b>OOAD</b>: use case, activity, architecture, ERD, flowchart and UI mockup designs</li>
+        </ul>
+        <div class="tags plat"><span class="tag">Unity WebGL</span><span class="tag">PHP / REST</span><span class="tag">IDS</span><span class="tag">Gamification</span><span class="tag">OOAD</span></div>
+      </article>
+
+      <article class="card proj plat" data-flag="0.25">
+        <div class="kicker">VAPT · Group project</div>
+        <h3>Web App Penetration Test</h3>
+        <p>Full vulnerability assessment and penetration test of an authentication portal and OWASP Juice Shop in an isolated lab, delivered as a professional VAPT report.</p>
+        <div class="sev"><span class="hi">SQL injection</span><span class="hi">Broken access control</span><span class="hi">IDOR</span><span class="md">XSS</span><span class="md">Sensitive data exposure</span><span class="md">Missing security headers</span></div>
+        <div class="tags plat"><span class="tag">OWASP Top 10</span><span class="tag">nmap</span><span class="tag">curl</span><span class="tag">Reporting</span></div>
+      </article>
+
+      <article class="card proj plat" data-bug="1">
+        <div class="kicker">Blue team · Lab build</div>
+        <h3>Live SIEM / ESM Lab</h3>
+        <p>Built a security monitoring environment from scratch for event correlation and access-control analysis.</p>
+        <ul>
+          <li>VMware <b>ESXi 8.0.3</b> hypervisor</li>
+          <li><b>SolarWinds SEM</b> for log collection &amp; correlation</li>
+          <li><b>GNS3</b> with Cisco 3640 IOS, plus a Windows 7 endpoint</li>
+        </ul>
+        <div class="tags plat"><span class="tag">SIEM</span><span class="tag">ESXi</span><span class="tag">GNS3</span><span class="tag">Cisco IOS</span></div>
+      </article>
+
+      <article class="card proj plat" data-flag="0.7">
+        <div class="kicker">GRC · ISO/IEC 27005</div>
+        <h3>Cyber Risk Management Plan</h3>
+        <p>Risk management plan for a fictional company following ISO/IEC 27005: asset identification, threat and vulnerability analysis, risk evaluation and treatment, with network diagrams and an org chart.</p>
+        <div class="tags plat"><span class="tag">ISO/IEC 27005</span><span class="tag">Risk assessment</span><span class="tag">Audit</span></div>
+      </article>
+
+      <article class="card proj plat">
+        <div class="kicker">Hardening · Policy</div>
+        <h3>Server Hardening Strategy</h3>
+        <p>Hardening strategy for Windows and Linux servers with 32 policies covering accounts, services, patching, logging and network exposure.</p>
+        <div class="tags plat"><span class="tag">Windows Server</span><span class="tag">Linux</span><span class="tag">Security policy</span></div>
+      </article>
+
+      <article class="card proj plat" data-bug="1">
+        <div class="kicker">Network security · Design</div>
+        <h3>Secure VPN Architecture</h3>
+        <p>Designed an IPsec-based VPN architecture for a multi-site company, justifying tunnel modes, authentication (AAA) and placement of firewalls and IDS/IPS.</p>
+        <div class="tags plat"><span class="tag">IPsec</span><span class="tag">VPN</span><span class="tag">Firewalls</span><span class="tag">IDS/IPS</span></div>
+      </article>
+
+      <article class="card proj plat" data-flag="0.5">
+        <div class="kicker">CTF · Class challenge</div>
+        <h3>Recon → Bypass → Stego</h3>
+        <p>Multi-stage CTF challenge: reconnaissance, a login bypass, then pulling hidden data out of an image with steganography and file-carving tools.</p>
+        <div class="tags plat"><span class="tag">exiftool</span><span class="tag">binwalk</span><span class="tag">steghide</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-title"><h2 class="plat">skills</h2><small>cat /etc/arsenal</small></div>
+    <div class="grid">
+      <div class="card skill plat" data-flag="0.6"><h3><i>⚔</i>Offensive / VAPT</h3><div class="chips"><span class="chip">Penetration testing</span><span class="chip">OWASP Top 10</span><span class="chip">SQLi · XSS · IDOR</span><span class="chip">Nmap</span><span class="chip">Wireshark</span><span class="chip">curl</span><span class="chip">MITRE ATT&amp;CK</span><span class="chip">OSINT</span><span class="chip">VAPT reporting</span></div></div>
+      <div class="card skill plat" data-bug="1"><h3><i>🛡</i>Defensive / Network</h3><div class="chips"><span class="chip">IDS / IPS</span><span class="chip">SIEM (SolarWinds SEM)</span><span class="chip">Firewalls</span><span class="chip">IPsec / VPN</span><span class="chip">AAA</span><span class="chip">Cisco IOS</span><span class="chip">Server hardening</span></div></div>
+      <div class="card skill plat"><h3><i>🔍</i>Forensics &amp; CTF</h3><div class="chips"><span class="chip">FTK Imager</span><span class="chip">Evidence handling</span><span class="chip">exiftool</span><span class="chip">binwalk</span><span class="chip">steghide</span></div></div>
+      <div class="card skill plat"><h3><i>📜</i>GRC &amp; Law</h3><div class="chips"><span class="chip">ISO/IEC 27005</span><span class="chip">Risk management</span><span class="chip">Computer audit</span><span class="chip">PDPA</span><span class="chip">Cyber Security Act 2024</span><span class="chip">Security policy</span></div></div>
+      <div class="card skill plat"><h3><i>⚙</i>Infra &amp; Dev</h3><div class="chips"><span class="chip">VMware ESXi</span><span class="chip">GNS3</span><span class="chip">Windows / Linux</span><span class="chip">Python</span><span class="chip">PHP</span><span class="chip">SQL</span><span class="chip">Java</span><span class="chip">Unity (WebGL)</span><span class="chip">REST APIs</span><span class="chip">Database design</span></div></div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="sec-title"><h2 class="plat">education</h2><small>history | grep learn</small></div>
+    <div class="grid">
+      <div class="card edu plat" data-flag="0.75">
+        <h3>Bachelor of Computer Science (Computer Security)</h3>
+        <div class="where">Universiti Teknikal Malaysia Melaka (UTeM) · Faculty of AI &amp; Cyber Security</div>
+        <p>2024 – expected 2027 · CGPA 3.33 · FYP: Net-Guardian.</p>
+        <div class="timeline">
+          <div>Hacking Techniques <span>· pentest, OWASP, ATT&amp;CK</span></div>
+          <div>Network Security <span>· firewalls, IPsec, IDS/IPS, SIEM</span></div>
+          <div>Digital Forensics <span>· FTK Imager, chain of custody</span></div>
+          <div>Computer Audit &amp; Risk Management <span>· ISO/IEC 27005</span></div>
+          <div>Cyberlaw &amp; Security Policy <span>· PDPA, Cyber Security Act 2024</span></div>
+          <div>Physical Security <span>· ESM, access control correlation</span></div>
+        </div>
+      </div>
+      <div class="card edu plat">
+        <h3>Certifications</h3>
+        <div class="timeline">
+          <div><b style="color:var(--g)">CompTIA Security+ (SY0-701)</b> <span>· CompTIA · 2026</span></div>
+          <div>Red Teaming Level 0 <span>· OWASP · 2026</span></div>
+        </div>
+        <h3 style="margin-top:22px">Diploma in Information Technology</h3>
+        <div class="where">Politeknik Besut Terengganu · 2020 – 2023</div>
+        <div class="timeline">
+          <div>CGPA 3.85</div>
+          <div>Best Final Year Project award <span>· maid booking system (PHP + WhatsApp)</span></div>
+        </div>
+      </div>
+      <div class="card edu plat">
+        <h3>What I bring to your team</h3>
+        <p style="margin-top:10px">Hands-on lab experience on both red and blue sides, plus experience writing the reports, policies and plans that come after the technical work.</p>
+        <div class="timeline">
+          <div>Clear technical writing <span>· VAPT reports, risk plans</span></div>
+          <div>Comfortable building labs <span>· hypervisors, network emulation</span></div>
+          <div>Team projects <span>· group VAPT, security consulting</span></div>
+          <div>Learns fast, likes puzzles <span>· CTFs, this website</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sec-title"><h2 class="plat">contact</h2><small>nc -lvnp 443</small></div>
+    <div class="card contact plat" data-bug="1">
+      <div>
+        <h3>Let's open a connection.</h3>
+        <p>I'm looking for an internship in penetration testing, SOC operations or security engineering. Based in Malaysia and happy to work on-site or hybrid.</p>
+      </div>
+      <div class="clist" id="clist"></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap plat">
+    <span>© 2026 Muhamad Arif Syahmi · built by hand, with a game hidden inside</span>
+    <span>psst: try <code>help</code> in the terminal, or press <code>G</code></span>
+  </div>
+</footer>
+
+<div id="hud"><span>FLAGS <b id="hFlags">0/0</b></span><span>INTEGRITY <span class="hp" id="hHp">♥♥♥</span></span><span>TIME <b id="hTime">0.0s</b></span><span class="keys">←→ move · ↑/space jump ×2 · ↓ drop · esc quit</span></div>
+<div id="toast"></div>
+<div id="touch"><div><button id="tl">◀</button><button id="tr">▶</button></div><div><button id="td">▼</button><button id="tj">▲</button></div></div>
+
+<div class="modal" id="mBrief"><div class="mbox">
+  <h3>&gt; MISSION BRIEFING</h3>
+  <p>A rogue packet (you) has entered Arif's portfolio. Capture every <b style="color:var(--g)">flag</b> hidden on the page to get root.</p>
+  <p>Jump across cards and headings. Avoid the <b style="color:var(--r)">malware</b> 🐛 and don't fall off the network. You have 3 integrity points.</p>
+  <p><kbd>←</kbd> <kbd>→</kbd> move · <kbd>↑</kbd>/<kbd>Space</kbd> jump (double jump!) · <kbd>↓</kbd> drop down · <kbd>Esc</kbd> quit</p>
+  <div class="btns"><button class="btn solid" id="bStart">./start.sh</button><button class="btn" id="bCancel">cancel</button></div>
+</div></div>
+<div class="modal" id="mWin"><div class="mbox">
+  <h3>ROOT ACCESS GRANTED</h3>
+  <p>All flags captured in <b id="wTime" style="color:var(--txt)"></b>. Final flag:</p>
+  <div class="code">flag{h1r3_4r1f_f0r_th3_1nt3rnsh1p}</div>
+  <p>Thanks for exploring. If you'd like to talk about an internship, my contact details are at the bottom.</p>
+  <div class="btns"><a class="btn solid" href="#contact" id="bWinContact">contact --me</a><button class="btn" id="bAgain">play again</button></div>
+</div></div>
+<div class="modal" id="mLose"><div class="mbox bad">
+  <h3>SYSTEM COMPROMISED</h3>
+  <p>Integrity reached 0. The malware won this round.</p>
+  <div class="btns"><button class="btn solid" id="bRetry">retry</button><button class="btn" id="bQuit">exit game</button></div>
+</div></div>
+
+<script>
+/* ===== Edit your details here ===== */
+const CONFIG = {
+  email:    "arifsyahmi.sec@gmail.com",
+  linkedin: "https://www.linkedin.com/in/arifsyhmi",
+  github:   "https://github.com/KarusDeArmas",
+  phone:    "",   // optional, e.g. "+60 12-345 6789"
+  location: "Malaysia"
+};
+/* ================================== */
+
+(function contacts(){
+  const el = document.getElementById('clist');
+  const row = (label, val, href) => val
+    ? `<a href="${href}" target="_blank" rel="noopener"><b>${label}</b>${val}</a>`
+    : `<div><b>${label}</b><span class="todo">[add in CONFIG]</span></div>`;
+  el.innerHTML =
+    row('email', CONFIG.email, 'mailto:' + CONFIG.email) +
+    row('linkedin', CONFIG.linkedin.replace(/^https?:\/\/(www\.)?/, ''), CONFIG.linkedin) +
+    row('github', CONFIG.github.replace(/^https?:\/\/(www\.)?/, ''), CONFIG.github) +
+    (CONFIG.phone ? `<div><b>phone</b>${CONFIG.phone}</div>` : '') +
+    `<div><b>location</b>${CONFIG.location}</div>`;
+})();
+
+/* ---------- typing roles ---------- */
+(function roles(){
+  const list = ['Aspiring Penetration Tester', 'Blue Team / SOC Enthusiast', 'CTF Player', 'Builder of security games'];
+  const t = document.getElementById('roleText');
+  let i = 0, j = 0, del = false;
+  (function tick(){
+    const w = list[i];
+    t.textContent = w.slice(0, j);
+    if (!del && j < w.length) j++;
+    else if (!del) { del = true; return setTimeout(tick, 1600); }
+    else if (j > 0) j--;
+    else { del = false; i = (i + 1) % list.length; }
+    setTimeout(tick, del ? 35 : 70);
+  })();
+})();
+
+/* ---------- console flag ---------- */
+console.log('%c  root@arif ', 'background:#39ff88;color:#04110a;font-weight:bold;font-size:14px', 'Nice, you opened DevTools.');
+console.log('Reversed for you: ' + '}dn31rf_ym_3r4_sl00tv3d{galf');
+
+/* ---------- terminal ---------- */
+const out = document.getElementById('tout');
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function print(html, cls){ const d = document.createElement('div'); d.className = 'tl ' + (cls||''); d.innerHTML = html; out.insertBefore(d, inputRow); out.scrollTop = out.scrollHeight; }
+const inputRow = document.createElement('div');
+inputRow.className = 'tin';
+inputRow.innerHTML = '<label>root@arif:~#</label><input id="tin" autocomplete="off" spellcheck="false" aria-label="terminal input">';
+out.appendChild(inputRow);
+const tin = document.getElementById('tin');
+out.addEventListener('click', () => tin.focus());
+
+const HASHES = {
+  '525d1031416bcafcc5af67b8a8efc547342d3ff613d2b08f16135dc2d0cc5e00':'source code recon',
+  '1bd72235f45db13649232cf19af98b5c5147c1857aa4751f4704875a745f9f83':'devtools console',
+  'd7ba614676b457e3e6c432df3d5965368400fd07723d23b85ddbbba4e8e781c3':'base64 decode'
+};
+const found = new Set();
+async function sha256(s){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
+
+const CMDS = {
+  help: () => print(
+`<span class="c">available commands</span>
+  whoami        who is this guy
+  ls [-a]       list files
+  cat &lt;file&gt;    read a file
+  projects      jump to projects
+  skills        jump to skills
+  contact       how to reach me
+  game          start the platformer (or press G)
+  submit &lt;flag&gt; submit a recon flag
+  hint          stuck on the flags?
+  clear         clear the screen`),
+  whoami: () => print('Muhamad Arif Syahmi: final-year Computer Security student @ UTeM (FAIX).\nSeeking a cybersecurity internship: VAPT / SOC / security engineering.', 'g'),
+  ls: a => print(a.includes('-a') ? '.  ..  <span class="y">.secret</span>  about.txt  skills.txt  fyp.txt  resume.md' : 'about.txt  skills.txt  fyp.txt  resume.md'),
+  cat: a => {
+    const f = a[0] || '';
+    const files = {
+      'about.txt': 'Final-year CS (Computer Security) @ UTeM. I break things in labs, then write the report on how to fix them.',
+      'skills.txt': 'certs: CompTIA Security+ (SY0-701)\noffense: VAPT, OWASP Top 10, Nmap, Wireshark, ATT&CK\ndefense: IDS/IPS, SIEM, IPsec VPN, hardening\nforensics: FTK Imager, exiftool, binwalk, steghide\ngrc: ISO/IEC 27005, PDPA, Cyber Security Act 2024',
+      'fyp.txt': 'Net-Guardian: a Unity WebGL tower defense game that trains intrusion detection.\nTowers = IDS signatures. Enemies = attacks. Framework: Signature-to-Tower (STG).',
+      'resume.md': 'You\'re reading it. Scroll down, or type "contact".',
+      '.secret': 'ZmxhZ3tiYXNlNjRfaXNfbm90X2VuY3J5cHRpb259'
+    };
+    if (!f) return print('cat: missing file operand', 'r');
+    if (files[f] !== undefined) return print(esc(files[f]), f === '.secret' ? 'y' : '');
+    print('cat: ' + esc(f) + ': No such file or directory', 'r');
+  },
+  projects: () => { print('cd ~/projects ...', 'm'); go('#projects'); },
+  skills: () => { print('cat /etc/arsenal ...', 'm'); go('#skills'); },
+  contact: () => { print('opening connection ...', 'm'); go('#contact'); },
+  game: () => { print('launching game mode ...', 'g'); setTimeout(() => toggleGame(true), 300); },
+  hint: () => print('1) good recon starts with view-source\n2) developers live in the console (F12)\n3) ls -a, then think: "that isn\'t encryption"', 'y'),
+  clear: () => { [...out.querySelectorAll('.tl')].forEach(n => n.remove()); },
+  sudo: () => print('you are not root here, I am. This incident will be reported. 👀', 'r'),
+  nmap: () => print('Starting Nmap ... \nPORT    STATE SERVICE\n443/tcp open  internship-applications\nNmap done: 1 IP address (1 host up)', 'c'),
+  submit: async a => {
+    const f = (a[0] || '').trim();
+    if (!f) return print('usage: submit flag{...}', 'r');
+    let h;
+    try { h = await sha256(f); } catch(e) { return print('crypto unavailable in this browser', 'r'); }
+    if (HASHES[h]) {
+      if (found.has(h)) return print('already captured: ' + HASHES[h], 'y');
+      found.add(h);
+      document.getElementById('reconCount').textContent = found.size + '/3 found';
+      print('✔ correct! [' + HASHES[h] + '] ' + found.size + '/3', 'g');
+      if (found.size === 3) print('🏆 all recon flags captured. You\'d make a good pentester. Now try the game: type "game"', 'g');
+    } else print('✘ wrong flag (checked against SHA-256 hashes, so no peeking in the source)', 'r');
+  }
+};
+function go(sel){ document.querySelector(sel).scrollIntoView({behavior:'smooth'}); }
+tin.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const raw = tin.value.trim(); tin.value = '';
+  print('<span class="g">root@arif:~#</span> ' + esc(raw));
+  if (!raw) return;
+  const [c, ...args] = raw.split(/\s+/);
+  const fn = CMDS[c.toLowerCase()];
+  fn ? fn(args) : print(esc(c) + ': command not found. try "help"', 'r');
+});
+(function boot(){
+  const lines = [['[ ok ] loading portfolio kernel...', 'm'], ['[ ok ] mounting /projects /skills /education', 'm'], ['[ ok ] firewall up · IDS watching 👁', 'm'], ['welcome, visitor. type <span class="y">help</span> to begin, or <span class="y">game</span> to play.', 'g']];
+  lines.forEach((l, i) => setTimeout(() => print(l[0], l[1]), 250 + i * 320));
+})();
+
+/* =================== GAME =================== */
+const cv = document.getElementById('game'), ctx = cv.getContext('2d');
+let W = 0, H = 0;
+function resize(){ const d = Math.min(2, window.devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W*d; cv.height = H*d; ctx.setTransform(d,0,0,d,0,0); ctx.imageSmoothingEnabled = false; }
+addEventListener('resize', resize); resize();
+
+const S = 2; // pixel scale
+const HERO = ["..hhhhhh..",".hhhhhhhh.","hhhhhhhhhh","hhffffffhh","hhfgffgfhh","hhffffffhh",".hhffffhh.","..bbbbbb..",".bbbbbbbb.","bbbbccbbbb","bbbbbbbbbb",".bbbbbbbb."];
+const LEGS = [[".bb....bb.",".dd....dd."],["..bb..bb..","..dd..dd.."],[".bbb..bbb.","dd......dd"]];
+const BUG = ["r........r",".r......r.","..rrrrrr..",".rrwrrwrr.","rrrrrrrrrr",".rrrrrrrr.","r.r....r.r"];
+const PAL = {h:'#1d8f4f',f:'#05090d',g:'#39ff88',b:'#14402a',c:'#39ff88',d:'#0d2a1b',r:'#ff4d6d',w:'#fff'};
+function sprite(map, x, y, flip){ for (let r = 0; r < map.length; r++) for (let c = 0; c < map[r].length; c++){ const ch = map[r][flip ? map[r].length-1-c : c]; if (ch === '.') continue; ctx.fillStyle = PAL[ch]; ctx.fillRect(Math.round(x + c*S), Math.round(y + r*S), S, S); } }
+
+const P = {w:20, h:28};
+let st = null, keys = {}, raf = 0, last = 0;
+const hud = {f:document.getElementById('hFlags'), hp:document.getElementById('hHp'), t:document.getElementById('hTime')};
+
+function plats(){
+  const sx = scrollX, sy = scrollY, a = [];
+  document.querySelectorAll('.plat').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return;
+    a.push({el, x:r.left+sx, y:r.top+sy, w:r.width});
+  });
+  return a;
+}
+function newState(){
+  const flags = [...document.querySelectorAll('[data-flag]')].map(el => ({el, f:+el.dataset.flag, got:false}));
+  const bugs = [...document.querySelectorAll('[data-bug]')].map((el, i) => ({el, ph:i*1.7, sp:0.6 + (i%3)*0.25}));
+  const sp = document.getElementById('spawn').getBoundingClientRect();
+  return {x:sp.left+scrollX+30, y:sp.top+scrollY-P.h-2, vx:0, vy:0, ground:false, jumps:0, face:1, hp:3, inv:0, drop:0, t:0, flags, bugs, parts:[], safe:null, done:false, anim:0};
+}
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = 0, 1400); }
+function updHud(){ hud.f.textContent = st.flags.filter(f => f.got).length + '/' + st.flags.length; hud.hp.textContent = '♥'.repeat(st.hp) + '♡'.repeat(3-st.hp); }
+function hurt(){
+  if (st.inv > 0) return;
+  st.hp--; st.inv = 90; updHud();
+  burst(st.x+P.w/2, st.y+P.h/2, '#ff4d6d', 18);
+  if (st.hp <= 0){ st.done = true; setTimeout(() => show('mLose'), 300); }
+  else toast('⚠ integrity hit: ' + st.hp + ' left');
+}
+function burst(x, y, col, n){ for (let i = 0; i < n; i++) st.parts.push({x, y, vx:(Math.random()-.5)*6, vy:(Math.random()-.9)*5, life:40, col}); }
+
+function step(dt){
+  const s = st; s.t += dt/60; s.anim += dt;
+  const pl = plats(), byEl = new Map(pl.map(p => [p.el, p]));
+  const docH = document.documentElement.scrollHeight, docW = document.documentElement.clientWidth;
+  // horizontal
+  const dir = (keys.r ? 1 : 0) - (keys.l ? 1 : 0);
+  s.vx += (dir*4.4 - s.vx) * Math.min(1, 0.3*dt);
+  if (dir) s.face = dir;
+  s.x = Math.max(0, Math.min(docW - P.w, s.x + s.vx*dt));
+  // vertical
+  s.vy = Math.min(14, s.vy + 0.55*dt);
+  const prevB = s.y + P.h;
+  s.y += s.vy*dt;
+  s.ground = false;
+  if (s.drop > 0) s.drop -= dt;
+  if (s.vy >= 0 && s.drop <= 0){
+    let best = null;
+    for (const p of pl){
+      if (s.x + P.w > p.x + 3 && s.x < p.x + p.w - 3 && prevB <= p.y + 1 && s.y + P.h >= p.y){
+        if (!best || p.y < best.y) best = p;
+      }
+    }
+    if (best){ s.y = best.y - P.h; s.vy = 0; s.ground = true; s.jumps = 0; s.safe = best.el; }
+  }
+  // fell off
+  if (s.y > docH + 40){
+    hurt();
+    if (!s.done){ const p = s.safe && byEl.get(s.safe) || byEl.get(document.getElementById('spawn')); s.x = p.x + p.w/2 - P.w/2; s.y = p.y - P.h - 4; s.vy = 0; }
+  }
+  if (s.inv > 0) s.inv -= dt;
+  // flags
+  for (const f of s.flags){
+    if (f.got) continue; const p = byEl.get(f.el); if (!p) continue;
+    f.x = p.x + p.w*f.f - 8; f.y = p.y - 28;
+    if (s.x < f.x + 16 && s.x + P.w > f.x && s.y < f.y + 28 && s.y + P.h > f.y){
+      f.got = true; burst(f.x+8, f.y+8, '#39ff88', 24); updHud();
+      const n = s.flags.filter(q => q.got).length;
+      toast('🚩 flag captured ' + n + '/' + s.flags.length);
+      if (n === s.flags.length){ s.done = true; document.getElementById('wTime').textContent = s.t.toFixed(1) + 's'; setTimeout(() => show('mWin'), 500); }
+    }
+  }
+  // bugs
+  for (const b of s.bugs){
+    const p = byEl.get(b.el); if (!p){ b.x = null; continue; }
+    const k = 0.5 + 0.5*Math.sin(s.t*b.sp + b.ph);
+    b.dir = Math.cos(s.t*b.sp + b.ph) > 0 ? 1 : -1;
+    b.x = p.x + 8 + (p.w - 36)*k; b.y = p.y - 14;
+    if (s.inv <= 0 && s.x < b.x + 18 && s.x + P.w > b.x + 2 && s.y < b.y + 14 && s.y + P.h > b.y + 2){
+      hurt(); s.vy = -8; s.vx = (s.x < b.x ? -1 : 1) * 7;
+    }
+  }
+  // particles
+  for (const q of s.parts){ q.x += q.vx*dt; q.y += q.vy*dt; q.vy += 0.25*dt; q.life -= dt; }
+  s.parts = s.parts.filter(q => q.life > 0);
+  // camera
+  const target = s.y - H*0.48;
+  window.scrollTo(0, scrollY + (target - scrollY) * Math.min(1, 0.12*dt));
+  hud.t.textContent = s.t.toFixed(1) + 's';
+}
+
+function draw(){
+  const s = st, ox = scrollX, oy = scrollY;
+  ctx.clearRect(0, 0, W, H);
+  // flags
+  for (const f of s.flags){
+    if (f.got || f.x == null) continue;
+    const x = f.x - ox, y = f.y - oy + Math.sin(s.anim*0.08 + f.f*9)*3;
+    if (y < -40 || y > H + 40) continue;
+    ctx.save(); ctx.shadowColor = '#39ff88'; ctx.shadowBlur = 14;
+    ctx.fillStyle = '#cfe3d8'; ctx.fillRect(x, y, 2, 26);
+    ctx.fillStyle = '#39ff88'; ctx.beginPath(); ctx.moveTo(x+2, y); ctx.lineTo(x+18, y+6); ctx.lineTo(x+2, y+12); ctx.fill();
+    ctx.restore();
+  }
+  // bugs
+  for (const b of s.bugs){ if (b.x == null) continue; const y = b.y - oy + (Math.floor(s.anim/8)%2); if (y < -30 || y > H+30) continue; sprite(BUG, b.x - ox, y, b.dir < 0); }
+  // player
+  if (!(s.inv > 0 && Math.floor(s.inv/5)%2)){
+    const x = s.x - ox, y = s.y - oy;
+    ctx.save(); ctx.shadowColor = '#39ff88'; ctx.shadowBlur = 10;
+    sprite(HERO, x, y, s.face < 0);
+    const legs = !s.ground ? LEGS[2] : Math.abs(s.vx) > 0.6 ? LEGS[Math.floor(s.anim/7)%2] : LEGS[0];
+    sprite(legs, x, y + HERO.length*S, false);
+    ctx.restore();
+  }
+  // particles
+  for (const q of s.parts){ ctx.globalAlpha = Math.max(0, q.life/40); ctx.fillStyle = q.col; ctx.fillRect(q.x-ox, q.y-oy, 3, 3); }
+  ctx.globalAlpha = 1;
+}
+
+function loop(ts){
+  if (!st) return;
+  const dt = last ? Math.min(2.5, (ts - last) / (1000/60)) : 1; last = ts;
+  if (!st.done) step(dt);
+  draw();
+  raf = requestAnimationFrame(loop);
+}
+
+function show(id){ document.getElementById(id).classList.add('show'); }
+function hide(id){ document.getElementById(id).classList.remove('show'); }
+function startRun(){
+  ['mBrief','mWin','mLose'].forEach(hide);
+  document.documentElement.classList.add('nosmooth');
+  document.getElementById('spawn').scrollIntoView({block:'center'});
+  st = newState(); updHud(); keys = {}; last = 0;
+  cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+}
+function toggleGame(on){
+  on = on === undefined ? !document.body.classList.contains('game') : on;
+  if (on){
+    if (document.activeElement) document.activeElement.blur();
+    document.body.classList.add('game');
+    document.getElementById('gameBtn').textContent = '■ EXIT GAME';
+    show('mBrief');
+  } else {
+    document.body.classList.remove('game');
+    document.getElementById('gameBtn').textContent = '▶ GAME MODE';
+    ['mBrief','mWin','mLose'].forEach(hide);
+    cancelAnimationFrame(raf); st = null; ctx.clearRect(0, 0, W, H);
+    document.documentElement.classList.remove('nosmooth');
+  }
+}
+document.getElementById('gameBtn').onclick = () => toggleGame();
+document.getElementById('bStart').onclick = startRun;
+document.getElementById('bCancel').onclick = () => toggleGame(false);
+document.getElementById('bAgain').onclick = startRun;
+document.getElementById('bRetry').onclick = startRun;
+document.getElementById('bQuit').onclick = () => toggleGame(false);
+document.getElementById('bWinContact').onclick = () => { toggleGame(false); setTimeout(() => go('#contact'), 50); };
+
+function jump(){
+  if (!st || st.done) return;
+  if (st.ground || st.jumps < 2){ st.vy = st.ground ? -12 : -10.5; st.jumps = st.ground ? 1 : st.jumps + 1; st.ground = false; }
+}
+function dropDown(){ if (st && st.ground){ st.drop = 12; st.ground = false; st.vy = 1; } }
+const KMAP = {ArrowLeft:'l', a:'l', A:'l', ArrowRight:'r', d:'r', D:'r'};
+addEventListener('keydown', e => {
+  const typing = document.activeElement && document.activeElement.tagName === 'INPUT';
+  if (!typing && (e.key === 'g' || e.key === 'G') && !document.body.classList.contains('game')) { toggleGame(true); return; }
+  if (!document.body.classList.contains('game')) return;
+  if (e.key === 'Escape'){ toggleGame(false); return; }
+  if (document.getElementById('mBrief').classList.contains('show') && e.key === 'Enter'){ startRun(); return; }
+  if (!st) return;
+  if (KMAP[e.key]){ keys[KMAP[e.key]] = true; e.preventDefault(); }
+  if ((e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w' || e.key === 'W') && !e.repeat){ jump(); e.preventDefault(); }
+  if ((e.key === 'ArrowDown' || e.key === 's' || e.key === 'S')){ dropDown(); e.preventDefault(); }
+});
+addEventListener('keyup', e => { if (KMAP[e.key]) keys[KMAP[e.key]] = false; });
+addEventListener('blur', () => { keys = {}; });
+
+// touch controls
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) document.body.classList.add('touchdev');
+function hold(id, k){ const b = document.getElementById(id);
+  b.addEventListener('pointerdown', e => { e.preventDefault(); keys[k] = true; });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev => b.addEventListener(ev, () => keys[k] = false)); }
+hold('tl', 'l'); hold('tr', 'r');
+document.getElementById('tj').addEventListener('pointerdown', e => { e.preventDefault(); jump(); });
+document.getElementById('td').addEventListener('pointerdown', e => { e.preventDefault(); dropDown(); });
+</script>
+</body>
+</html>
